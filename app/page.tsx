@@ -1,21 +1,16 @@
+import { getServerSession } from "next-auth";
 import CategoriesLists from "./components/CategoriesLists";
 import Post from "./components/Post";
-import { postsData } from "./constant/data";
+import { authOptions } from "./api/auth/[...nextauth]/route";
 
 
-export default function Home() {
+export default async function Home() {
+    const session = await getServerSession(authOptions);
     return (
         <>
             <CategoriesLists />
-            {postsData && postsData.length > 0 ? (
-                postsData.map((post, index) => (
-                    <Post key={index} post={post}/>
-                ))
-            )
-                : (
-                    <div className="">No post to display</div >
-                )
-            }
+            <Post session={session}/>
+
         </>
     );
 }

@@ -17,7 +17,7 @@ h1 {
 }
 
 h2 {
-  @apply text-2xl font-bold my-4;
+  @apply text-2xl font-bold my-3;
 }
 
 p.content {

@@ -1,10 +1,22 @@
 export interface PostResponse {
-  id: number;
+  id: string;
   title: string;
   content: string;
-  author: string;
-  datePublished: string;
-  category: string;
-  links: string[];
-  thumbnail: string;
+  imageUrl?: string;
+  publicId?: string;
+  catName?: string;
+  links: null | string[];
+  createdAt: string;
+  updatedAt: string;
+  authorEmail: string;
+  author: {
+    name: string;
+  };
+}
+
+
+export interface CategoriesResponse {
+  id: string;
+  catName: string;
+  postIDs: [];
 }

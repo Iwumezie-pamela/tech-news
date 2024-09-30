@@ -2,7 +2,7 @@
 import React from 'react'
 
 type DeleteProps = {
-    id: number
+    id: string
 }
 
 function DeleteButton({ id }: DeleteProps) {

@@ -48,14 +48,14 @@ function Navbar() {
                         <div>{session?.user?.email}</div>
                         <Link
                             onClick={() => setIsPopupVisible(false)}
-                            className="hover:underline"
+                            className="hover:underline w-fit ml-auto"
                             href={"/dashboard"}
                         >
                             Dashboard
                         </Link>
                         <Link
                             onClick={() => setIsPopupVisible(false)}
-                            className="hover:underline"
+                            className="hover:underline w-fit ml-auto"
                             href={"/create-post"}
                         >
                             Create Post
