@@ -37,8 +37,8 @@ function Post({ session }: Props) {
         fetchCategories();
     }, []);
 
-    // const isEditable = session && session?.user?.email === posts[0].authorEmail;
-    const isEditable = true;
+    const isEditable = session && posts && session.user?.email === posts[0]?.authorEmail;
+
     return (
         <div className="">
             {posts && posts.map(post => (
