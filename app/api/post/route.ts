@@ -1,11 +1,18 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prismadb';
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from '../auth/[...nextauth]/route';
 
 export async function POST(request: Request) {
   try {
+    const session = await getServerSession(authOptions);
+
+    if (!session) {
+      return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
+    }
     const { title, content, links, selectedCategory, imageUrl, publicId } =
       await request.json();
-    const authorEmail = 'iwumeziep@gmail.com';
+    const authorEmail = session?.user?.email as string;
 
     if (!title || !content) {
       return NextResponse.json(
@@ -50,7 +57,7 @@ export async function GET() {
       },
       orderBy: {
         createdAt: 'desc',
-      }
+      },
     });
     return NextResponse.json(posts);
   } catch (error) {

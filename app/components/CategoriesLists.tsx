@@ -32,7 +32,7 @@ function CategoriesLists() {
     return (
         <div className="flex gap-2 text-sm flex-wrap">
             {categories &&
-                categories.map((category, index) => (
+                categories?.map((category, index) => (
                     <Link
                         key={index}
                         className="px-4 py-1 rounded-md bg-slate-800 text-white cursor-pointer"

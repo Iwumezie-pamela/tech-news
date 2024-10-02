@@ -1,31 +1,36 @@
 'use client'
+import DeleteButton from '@/app/components/DeleteButton';
+import { CategoryResponse } from '@/app/model/PostModel';
+import moment from 'moment';
+import { Session } from 'next-auth';
+import Image from 'next/image';
+import Link from 'next/link';
 import React, { useEffect, useState } from 'react'
-import { PostResponse } from '../model/PostModel'
-import Image from 'next/image'
-import Link from 'next/link'
-import DeleteButton from './DeleteButton'
-import moment from 'moment'
-import { Session } from 'next-auth'
 
 type Props = {
+    params: {
+        catName: string;
+    }
     session: Session | null
 }
 
-function Post({ session }: Props) {
-
-    const [posts, setPosts] = useState<PostResponse[]>()
+const CategoryPage = ({ params, session }: Props) => {
+    const [category, setCategory] = useState<CategoryResponse>()
     const [loading, setLoading] = useState(true);
+    const isEditable = session && category?.posts && session.user?.email === category.posts[0]?.authorEmail;
 
     useEffect(() => {
         // Define the async fetch function
-        const fetchCategories = async () => {
+        const fetchPostBasedOnCategoryName = async () => {
             try {
-                const response = await fetch('http://localhost:3000/api/post');
+                const response = await fetch(`http://localhost:3000/api/categories/${params.catName}`,
+                    { cache: "no-store" }
+                );
                 if (!response.ok) {
                     throw new Error('Failed to fetch posts');
                 }
-                const data = await response.json();
-                setPosts(data);
+                const catResponse = await response.json();
+                setCategory(catResponse);
             } catch (error) {
                 console.log(error);
             } finally {
@@ -34,12 +39,15 @@ function Post({ session }: Props) {
         };
 
         // Call the fetch function
-        fetchCategories();
+        fetchPostBasedOnCategoryName();
     }, []);
-
     return (
-        <div className="">
-            {posts && posts?.map(post => (
+        <>
+            <h1>
+                <span className="font-normal">Category: </span>{" "}
+                {decodeURIComponent(params.catName)}
+            </h1>
+            {category?.posts && category?.posts?.map(post => (
                 <div className="my-4 border-b border-b-300 py-8" key={post.id}>
                     <div className="mb-4">
                         {post.author ? (
@@ -109,7 +117,7 @@ function Post({ session }: Props) {
                         </div>
                     )}
 
-                    {session && posts && session.user?.email === post.authorEmail && (
+                    {isEditable && (
                         <div className="flex gap-3 font-bold py-2 px-4 rounded-md bg-slate-200 w-fit">
                             <Link href={`/edit-post/${post.id}`}>Edit</Link>
                             <DeleteButton id={post.id} />
@@ -118,11 +126,11 @@ function Post({ session }: Props) {
                 </div>
             ))}
 
-            {!posts && loading && <p className="text-center text-gray-400 mx-auto flex flex-col items-center justify-center h-screen">Loading.....</p>}
-            {!posts && !loading && <p className="text-center text-gray-400 mx-auto flex flex-col items-center justify-center h-screen">No post to display</p>}
+            {!category?.posts && loading && <p className="text-center text-gray-400 mx-auto flex flex-col items-center justify-center h-[40vh]">Loading.....</p>}
+            {category?.posts && !loading && <p className="text-center text-gray-400 mx-auto flex flex-col items-center justify-center h-[40vh]">No post to display</p>}
 
-        </div>
+        </>
     )
 }
 
-export default Post
+export default CategoryPage
